@@ -102,20 +102,27 @@
   .bubble-wrap .artcard{ margin-top:0; }
   .note{ font-size:11px; color:#a89895; margin-top:14px; }
   .note a{ color:#a89895; }
-  /* 説明セクション */
-  .seo-sec{ margin:30px 0 0; }
-  .seo-sec h2{ font-size:19px; font-weight:800; color:#2b2b2b; margin:28px 0 10px; padding-bottom:8px; border-bottom:2px solid var(--line); }
-  .seo-sec p{ font-size:15px; margin:0 0 12px; }
-  .seo-sec ul,.seo-sec ol{ font-size:15px; margin:0 0 14px; padding-left:1.3em; }
-  .seo-sec li{ margin:7px 0; }
-  .seo-sec strong{ color:#5b4744; }
-  .faq-q{ font-weight:800; font-size:15.5px; margin:18px 0 6px; color:#5b4744; }
-  .faq-a{ font-size:15px; margin:0 0 12px; }
-  .seo-links{ list-style:none; padding:0; }
-  .seo-links a{ color:var(--mag); font-weight:700; text-decoration:none; }
-  .author-box{ display:flex; gap:12px; align-items:center; border:1px solid var(--line); border-radius:12px; padding:14px; background:#fdf3f1; margin:26px 0 0; }
-  .author-box img{ width:56px; height:56px; border-radius:50%; flex-shrink:0; border:1px solid var(--line); }
-  .author-box .a-txt{ font-size:13px; line-height:1.6; color:#5b4744; }
+  /* 説明セクション（アコーディオン） */
+  .seo-sec{ margin:26px 0 0; }
+  .acc{ border:1px solid var(--line); border-radius:12px; margin:0 0 10px; background:#fff; overflow:hidden; }
+  .acc summary{ list-style:none; cursor:pointer; padding:13px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; }
+  .acc summary::-webkit-details-marker{ display:none; }
+  .acc summary h2{ font-size:16px; font-weight:800; color:#5b4744; margin:0; padding:0; border:none; }
+  .acc summary::after{ content:"＋"; color:var(--mag); font-size:19px; font-weight:800; line-height:1; flex-shrink:0; }
+  .acc[open] summary::after{ content:"−"; }
+  .acc[open] summary{ border-bottom:1px solid var(--line); }
+  .acc-body{ padding:14px 16px 16px; font-size:14.5px; }
+  .acc-body p{ margin:0 0 10px; }
+  .acc-body ul{ margin:0 0 12px; padding-left:1.2em; }
+  .acc-body li{ margin:6px 0; }
+  .acc-body a{ color:var(--mag); font-weight:700; }
+  .faq-q{ font-weight:800; color:#5b4744; margin:14px 0 5px !important; }
+  .faq-q:first-child{ margin-top:0 !important; }
+  .seo-more{ font-size:13px; color:#9a7d7a; margin:14px 2px 0; }
+  .seo-more a{ color:var(--mag); font-weight:700; text-decoration:none; }
+  .author-box{ display:flex; gap:12px; align-items:center; border:1px solid var(--line); border-radius:12px; padding:13px; background:#fdf3f1; margin:16px 0 0; }
+  .author-box img{ width:52px; height:52px; border-radius:50%; flex-shrink:0; border:1px solid var(--line); }
+  .author-box .a-txt{ font-size:12.5px; line-height:1.6; color:#5b4744; }
   .author-box .a-name{ font-weight:800; color:#2b2b2b; display:block; }
   .author-box a{ color:var(--mag); }
 
@@ -258,62 +265,46 @@
   </div>
 
   <section class="seo-sec">
-    <h2>この計算機でわかること</h2>
-    <p>楽天モバイルに乗り換えたら、家族みんなで月いくらになるか。その目安を、その場で計算できる無料の計算機です。</p>
-    <ul>
-      <li><strong>家族全員ぶんの月額</strong>と、1人あたりの金額</li>
-      <li>基本料金・家族割・こども割などの<strong>内訳</strong></li>
-      <li>今のスマホ代を入れると、<strong>年間でいくら浮くか</strong>の目安</li>
-    </ul>
-    <p>会員登録も、名前やメールアドレスの入力もいりません。人数と使う量を選ぶだけです。</p>
+    <details class="acc">
+      <summary><h2>料金と割引のしくみ</h2></summary>
+      <div class="acc-body">
+        <p>Rakuten最強プランは、使ったデータ量で料金が変わる段階制です。使わなかった月は自動で安くなります。</p>
+        <ul>
+          <li>3GBまで … 月<strong>980円</strong>（税抜）</li>
+          <li>20GBまで … 月<strong>1,980円</strong>（税抜）</li>
+          <li>どれだけ使っても … 月<strong>2,980円</strong>（税抜）で上限</li>
+        </ul>
+        <p>ここに、条件に合う割引が重なります。</p>
+        <ul>
+          <li><a href="https://momonav.com/entry/2026/07/01/073000">最強家族割</a>：2回線以上で、1回線あたり毎月100円（税抜）引き。離れて暮らす家族や親戚も対象です。</li>
+          <li><a href="https://momonav.com/entry/2026/07/04/073000">最強こども割</a>：12歳以下が対象。家族割と合わせると3GBが月480円（税抜）になります。</li>
+          <li><a href="https://momonav.com/entry/2026/07/06/073000">最強青春割</a>：13〜22歳が対象。学生でなくても使えて、家族割と合わせると3GBが月780円（税抜）です。</li>
+          <li>最強シニアプログラム：65歳以上が対象で、毎月ポイントがもらえます。エントリーが必要な制度です。</li>
+        </ul>
+      </div>
+    </details>
 
-    <h2>使い方（3ステップ）</h2>
-    <ol>
-      <li><strong>家族で何回線使うかを選ぶ</strong><br />自分を含めた人数です。2回線以上で家族割が入ります。</li>
-      <li><strong>1人あたり月に使うデータ量を選ぶ</strong><br />よく分からないときは「わからない」を選んでも大丈夫です。</li>
-      <li><strong>「診断する」を押す</strong><br />月額の目安と、割引の内訳が出ます。</li>
-    </ol>
-    <p>「くわしく」に切り替えると、12歳以下・13〜22歳・65歳以上の人数を入れられます。年齢ごとの割引まで含めた金額が出るので、お子さんや親御さんの回線がある家庭はこちらが正確です。</p>
+    <details class="acc">
+      <summary><h2>よくある質問</h2></summary>
+      <div class="acc-body">
+        <p class="faq-q">この計算機は無料で使えますか?</p>
+        <p class="faq-a">使えます。会員登録も、名前やメールアドレスの入力もいりません。人数と使うデータ量を選ぶだけで、その場で目安が出ます。</p>
 
-    <h2>楽天モバイルの料金と割引のしくみ</h2>
-    <p>Rakuten最強プランは、使ったデータ量で料金が変わる段階制です。使わなかった月は自動で安くなります。</p>
-    <ul>
-      <li>3GBまで … 月<strong>980円</strong>（税抜）</li>
-      <li>20GBまで … 月<strong>1,980円</strong>（税抜）</li>
-      <li>どれだけ使っても … 月<strong>2,980円</strong>（税抜）で上限</li>
-    </ul>
-    <p>ここに、条件に合う割引が重なります。</p>
-    <ul>
-      <li><strong>最強家族割</strong>：2回線以上で、1回線あたり毎月100円（税抜）引き。離れて暮らす家族や親戚も対象です。</li>
-      <li><strong>最強こども割</strong>：12歳以下が対象。3GB以内なら毎月400円（税抜）引きで、家族割と合わせると3GBが月480円（税抜）になります。</li>
-      <li><strong>最強青春割</strong>：13〜22歳が対象。学生でなくても使えて、家族割と合わせると3GBが月780円（税抜）です。</li>
-      <li><strong>最強シニアプログラム</strong>：65歳以上が対象で、毎月ポイントがもらえます。エントリーが必要な制度です。</li>
-    </ul>
+        <p class="faq-q">出てきた金額は、そのまま請求される金額ですか?</p>
+        <p class="faq-a">目安の金額です。Rakuten最強プランの段階制と最強家族割をもとに試算しています。実際の請求は、使ったデータ量やオプション、通話料で変わります。</p>
 
-    <h2>よくある質問</h2>
-    <p class="faq-q">この計算機は無料で使えますか?</p>
-    <p class="faq-a">使えます。会員登録も、名前やメールアドレスの入力もいりません。人数と使うデータ量を選ぶだけで、その場で目安が出ます。</p>
+        <p class="faq-q">家族割は何回線から使えますか?</p>
+        <p class="faq-a">2回線からです。1回線あたり毎月100円（税抜）引きで、家族の人数ぶん効きます。離れて暮らす家族や親戚も対象になります。</p>
 
-    <p class="faq-q">出てきた金額は、そのまま請求される金額ですか?</p>
-    <p class="faq-a">目安の金額です。Rakuten最強プランの段階制と最強家族割をもとに試算しています。実際の請求は、使ったデータ量やオプション、通話料で変わります。</p>
+        <p class="faq-q">子供の分も計算できますか?</p>
+        <p class="faq-a">「くわしく」に切り替えると計算できます。12歳以下は最強こども割、13〜22歳は最強青春割で計算して、家族割と合わせた金額を出します。</p>
 
-    <p class="faq-q">家族割は何回線から使えますか?</p>
-    <p class="faq-a">2回線からです。1回線あたり毎月100円（税抜）引きで、家族の人数ぶん効きます。離れて暮らす家族や親戚も対象になります。</p>
+        <p class="faq-q">65歳以上の親の分も入れられますか?</p>
+        <p class="faq-a">入れられます。「くわしく」で65歳以上の人数を入れると、最強シニアプログラムのポイント還元を含めて計算します。エントリーが必要な制度なので、申し込みのあとの手続きをお忘れなく。</p>
+      </div>
+    </details>
 
-    <p class="faq-q">子供の分も計算できますか?</p>
-    <p class="faq-a">「くわしく」に切り替えると計算できます。12歳以下は最強こども割、13〜22歳は最強青春割で計算して、家族割と合わせた金額を出します。</p>
-
-    <p class="faq-q">65歳以上の親の分も入れられますか?</p>
-    <p class="faq-a">入れられます。「くわしく」で65歳以上の人数を入れると、最強シニアプログラムのポイント還元を含めて計算します。エントリーが必要な制度なので、申し込みのあとの手続きをお忘れなく。</p>
-
-    <h2>もっとくわしく知りたいときは</h2>
-    <ul class="seo-links">
-      <li><a href="https://momonav.com/entry/2026/06/17/204036">家族のスマホ代まるごと見直しガイド</a><br />何から手をつけるか、全体の流れをまとめています。</li>
-      <li><a href="https://momonav.com/entry/2026/07/01/073000">最強家族割とは?離れた家族・親戚もOK</a></li>
-      <li><a href="https://momonav.com/entry/2026/07/04/073000">最強こども割とは?12歳以下ならいくら?</a></li>
-      <li><a href="https://momonav.com/entry/2026/07/06/073000">最強青春割とは?学生じゃなくても使える</a></li>
-      <li><a href="https://momonav.com/entry/2026/06/17/203733">スマホ代の平均はいくら?払いすぎの見分け方</a></li>
-    </ul>
+    <p class="seo-more">もっとくわしく：<a href="https://momonav.com/entry/2026/06/17/204036">家族のスマホ代まるごと見直しガイド</a>／<a href="https://momonav.com/entry/2026/06/17/203733">スマホ代の平均はいくら?</a></p>
 
     <div class="author-box">
       <img src="https://cdn.jsdelivr.net/gh/momonav/blog-assets@main/author_momonabu.png?v=260706" alt="ももなぶ（桃園學）" width="56" height="56" loading="lazy" />
