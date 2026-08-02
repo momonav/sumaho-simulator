@@ -100,6 +100,12 @@
   .bubble-wrap{ margin:16px 0 0; }
   .bubble-tag{ display:block; text-align:center; color:var(--mag); font-size:17px; font-weight:800; padding:4px 0 10px; margin:0; }
   .bubble-wrap .artcard{ margin-top:0; }
+  .picks{ margin:18px 0 4px; padding:16px 18px; background:#fff8f6; border:1px solid #f6c9c4; border-radius:14px; }
+  .picks-t{ margin:0 0 10px; font-size:15px; font-weight:800; color:#2b2b2b; }
+  .picks-list{ margin:0; padding-left:1.1em; }
+  .picks-list li{ margin:7px 0; font-size:15px; line-height:1.6; }
+  .picks-list a{ color:#c2185b; text-decoration:underline; text-underline-offset:3px; }
+  .picks-list a:hover{ opacity:.75; }
   .note{ font-size:11px; color:#a89895; margin-top:14px; }
   .note a{ color:#a89895; }
   /* 説明セクション（アコーディオン） */
@@ -250,6 +256,8 @@
     </a>
     </div>
 
+    <div class="picks" id="picks" style="display:none"></div>
+
     <div class="cta-soft">
       <p class="cta-soft-t">👇今すぐお得に申し込むなら👇</p>
       <a class="banner js-referral-cta" href="https://r10.to/hkv2NB" target="_blank" rel="noopener">
@@ -372,6 +380,79 @@
   function calc(){
     if(mode === 'detail') calcDetail();
     else calcSimple();
+    trackCalc();
+    renderPicks();
+  }
+
+  // ── 診断が実行されたことを計測する（2026-08-03 追加）
+  function trackCalc(){
+    if(typeof gtag !== 'function') return;
+    var plan = parseInt(document.querySelector('input[name=data]:checked').value, 10);
+    var planLabel = plan === 980 ? '3GB' : (plan === 1980 ? '20GB' : 'unlimited');
+    gtag('event', 'tool_calc', {
+      mode: mode,
+      lines: lines,
+      plan: planLabel,
+      has_kids: kids > 0,
+      has_youth: youth > 0,
+      has_senior: senior > 0,
+      has_current: !!parseInt(document.getElementById('current').value, 10)
+    });
+  }
+
+  // ── 診断の内容に合わせて、読むべき記事を出し分ける（2026-08-03 追加）
+  var PICKS = {
+    kids:      ['https://momonav.com/entry/2026/07/04/073000', '最強こども割とは?12歳以下はいくら安く?'],
+    youth:     ['https://momonav.com/entry/2026/07/06/073000', '最強青春割とは?22歳以下なら誰でも'],
+    senior:    ['https://momonav.com/entry/2026/08/02/145355', '65歳以上の親、シニア向けの割引は使うべき?'],
+    manyLines: ['https://momonav.com/entry/2026/08/02/195422', '5回線目から手数料がかかります。名義は誰にする?'],
+    unlimited: ['https://momonav.com/entry/2026/06/25/084128', 'ギガを使いすぎたときの止め方'],
+    meigi:     ['https://momonav.com/entry/2026/08/02/022454', '子供のスマホ、親名義と子供名義どっちがいい?'],
+    hanare:    ['https://momonav.com/entry/2026/08/02/194641', '離れて暮らす家族も家族割に入れる?'],
+    shiharai:  ['https://momonav.com/entry/2026/08/02/204406', '支払いは口座振替とカード、どっちが得?'],
+    solo:      ['https://momonav.com/entry/2026/08/02/010142', '乗り換えないでスマホ代は安くなる?']
+  };
+
+  function renderPicks(){
+    var box = document.getElementById('picks');
+    if(!box) return;
+    var plan = parseInt(document.querySelector('input[name=data]:checked').value, 10);
+    var keys = [];
+
+    if(kids > 0)   keys.push('kids', 'meigi');
+    if(youth > 0)  keys.push('youth');
+    if(senior > 0) keys.push('senior');
+    if(lines >= 5) keys.push('manyLines');
+    if(plan === 2980) keys.push('unlimited');
+    if(lines >= 2) keys.push('hanare');
+    if(lines === 1) keys.push('solo');
+    keys.push('shiharai');
+
+    // 重複を消して3本まで
+    var seen = {}, list = [];
+    for(var i = 0; i < keys.length && list.length < 3; i++){
+      if(seen[keys[i]]) continue;
+      seen[keys[i]] = 1;
+      list.push(PICKS[keys[i]]);
+    }
+
+    var html = '<p class="picks-t">🍑 あなたの場合、ここも見ておくと安心です</p><ul class="picks-list">';
+    for(var j = 0; j < list.length; j++){
+      html += '<li><a href="' + list[j][0] + '" target="_blank" rel="noopener" class="js-pick" data-pick="' + list[j][0] + '">' + list[j][1] + '</a></li>';
+    }
+    html += '</ul>';
+    box.innerHTML = html;
+    box.style.display = 'block';
+
+    // クリックを計測
+    var as = box.querySelectorAll('.js-pick');
+    for(var k = 0; k < as.length; k++){
+      as[k].addEventListener('click', function(){
+        if(typeof gtag === 'function'){
+          gtag('event', 'tool_pick_click', { pick: this.getAttribute('data-pick') });
+        }
+      });
+    }
   }
 
   function calcSimple(){
