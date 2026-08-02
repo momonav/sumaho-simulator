@@ -260,7 +260,7 @@
 
     <div class="cta-soft">
       <p class="cta-soft-t">👇今すぐお得に申し込むなら👇</p>
-      <a class="banner js-referral-cta" href="https://r10.to/hkv2NB" target="_blank" rel="noopener">
+      <a class="banner js-referral-cta" href="https://r10.to/hkv2NB" target="_blank" rel="sponsored noopener">
         <img src="https://cdn.jsdelivr.net/gh/momonav/blog-assets@main/banner_moushikomi.png" alt="楽天モバイル 社員紹介の申込ページ" />
       </a>
     </div>
@@ -308,7 +308,7 @@
         <p class="faq-a">「くわしく」に切り替えると計算できます。12歳以下は最強こども割、13〜22歳は最強青春割で計算して、家族割と合わせた金額を出します。</p>
 
         <p class="faq-q">65歳以上の親の分も入れられますか?</p>
-        <p class="faq-a">入れられます。「くわしく」で65歳以上の人数を入れると、最強シニアプログラムのポイント還元を含めて計算します。エントリーが必要な制度なので、申し込みのあとの手続きをお忘れなく。</p>
+        <p class="faq-a">入れられます。「くわしく」で65歳以上の人数を入れると、最強シニアプログラムのポイント還元を別に表示します。これは料金の割引ではなく後からもらえるポイントなので、月額合計には含めていません。エントリーが必要な制度なので、申し込みのあとの手続きをお忘れなく。</p>
       </div>
     </details>
 
@@ -496,7 +496,8 @@
     var kidsDisc = (plan === 980) ? 400 : 100;
     var kidsPer  = Math.max(plan - famD - kidsDisc, 0);
     var youthPer = Math.max(plan - famD - 100, 0);
-    var seniorPer= Math.max(plan - famD - 100, 0);
+    // シニアは料金の割引ではなくポイント還元＝請求額は通常と同じ（月額には含めない）
+    var seniorPer= Math.max(plan - famD, 0);
     var normalPer= plan - famD;
 
     var total = kidsPer * kids + youthPer * youth + seniorPer * senior + normalPer * normal;
@@ -509,8 +510,8 @@
     if(hasFam)   bd += '<div><span>家族割</span><span>−100円 ×' + lines + '</span></div>';
     if(kids > 0) bd += '<div><span>こども割</span><span>−' + kidsDisc + '円 ×' + kids + '</span></div>';
     if(youth > 0) bd += '<div><span>青春割</span><span>−100円 ×' + youth + '</span></div>';
-    if(senior > 0) bd += '<div><span>シニア</span><span>−100pt ×' + senior + '</span></div>';
     bd += '<div style="border-top:1px solid #f0dad7;margin-top:6px;padding-top:6px;font-weight:800"><span>月額合計</span><span>' + yen(total) + '円</span></div>';
+    if(senior > 0) bd += '<div style="font-size:12.5px;color:#5b4744;margin-top:6px"><span>シニアのポイント還元</span><span>別途 ' + yen(senior * 100) + 'pt/月</span></div>';
     document.getElementById('breakdown').innerHTML = bd;
 
     document.getElementById('resultNote').innerHTML = '\\ 割引たくさんあります! /';
@@ -541,13 +542,7 @@
     });
   });
 
-  document.querySelectorAll('.js-plan-link').forEach(function(el){
-    el.addEventListener('click', function(){
-      if(typeof gtag === 'function'){
-        gtag('event', 'tool_article_click', { article: 'plan_detail' });
-      }
-    });
-  });
+  // .js-plan-link は .artcard も兼ねているので、計測は下の .artcard 側に集約（二重発火の防止）
 
   document.querySelectorAll('.js-referral-cta').forEach(function(el){
     el.addEventListener('click', function(){
@@ -571,7 +566,7 @@
 </script>
 
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"この料金シミュレーターは無料で使えますか?","acceptedAnswer":{"@type":"Answer","text":"使えます。会員登録も、名前やメールアドレスの入力もいりません。人数と使うデータ量を選ぶだけで、その場で目安が出ます。"}},{"@type":"Question","name":"出てきた金額は、そのまま請求される金額ですか?","acceptedAnswer":{"@type":"Answer","text":"目安の金額です。Rakuten最強プランの段階制と最強家族割をもとに試算しています。実際の請求は、使ったデータ量やオプション、通話料で変わります。"}},{"@type":"Question","name":"楽天モバイルの家族割は何回線から使えますか?","acceptedAnswer":{"@type":"Answer","text":"2回線からです。1回線あたり毎月100円（税抜）引きで、家族の人数ぶん効きます。離れて暮らす家族や親戚も対象になります。"}},{"@type":"Question","name":"子供の分も計算できますか?","acceptedAnswer":{"@type":"Answer","text":"「くわしく」に切り替えると計算できます。12歳以下は最強こども割、13〜22歳は最強青春割で計算して、家族割と合わせた金額を出します。"}},{"@type":"Question","name":"65歳以上の親の分も入れられますか?","acceptedAnswer":{"@type":"Answer","text":"入れられます。「くわしく」で65歳以上の人数を入れると、最強シニアプログラムのポイント還元を含めて計算します。エントリーが必要な制度なので、申し込みのあとの手続きをお忘れなく。"}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"この料金シミュレーターは無料で使えますか?","acceptedAnswer":{"@type":"Answer","text":"使えます。会員登録も、名前やメールアドレスの入力もいりません。人数と使うデータ量を選ぶだけで、その場で目安が出ます。"}},{"@type":"Question","name":"出てきた金額は、そのまま請求される金額ですか?","acceptedAnswer":{"@type":"Answer","text":"目安の金額です。Rakuten最強プランの段階制と最強家族割をもとに試算しています。実際の請求は、使ったデータ量やオプション、通話料で変わります。"}},{"@type":"Question","name":"楽天モバイルの家族割は何回線から使えますか?","acceptedAnswer":{"@type":"Answer","text":"2回線からです。1回線あたり毎月100円（税抜）引きで、家族の人数ぶん効きます。離れて暮らす家族や親戚も対象になります。"}},{"@type":"Question","name":"子供の分も計算できますか?","acceptedAnswer":{"@type":"Answer","text":"「くわしく」に切り替えると計算できます。12歳以下は最強こども割、13〜22歳は最強青春割で計算して、家族割と合わせた金額を出します。"}},{"@type":"Question","name":"65歳以上の親の分も入れられますか?","acceptedAnswer":{"@type":"Answer","text":"入れられます。「くわしく」で65歳以上の人数を入れると、最強シニアプログラムのポイント還元を別に表示します。これは料金の割引ではなく後からもらえるポイントなので、月額合計には含めていません。エントリーが必要な制度なので、申し込みのあとの手続きをお忘れなく。"}}]}
 </script>
 </body>
 </html>
