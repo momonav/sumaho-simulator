@@ -96,7 +96,11 @@
   .artcard-d{ display:block; font-size:12.5px; color:#5b4744; margin-top:4px; line-height:1.55; }
   .cta-soft{ text-align:center; margin:22px 0 6px; padding-top:16px; border-top:1px dashed var(--line); }
   .cta-soft-t{ font-size:13px; color:#9a7d7a; font-weight:700; margin:0 0 10px; }
-  .banner img{ width:100%; border-radius:10px; }
+  /* display指定がなくinlineのままだと、アンカーの箱が中の画像(91px)より小さい
+     行ボックス(16px)になる。露出計測(IntersectionObserver)が見る箱＝アンカーなので、
+     見た目のCTAと一致させるためblockにする。 */
+  .banner{ display:block; }
+  .banner img{ display:block; width:100%; border-radius:10px; }
   .bubble-wrap{ margin:16px 0 0; }
   .bubble-tag{ display:block; text-align:center; color:var(--mag); font-size:17px; font-weight:800; padding:4px 0 10px; margin:0; }
   .bubble-wrap .artcard{ margin-top:0; }
@@ -260,13 +264,14 @@
 
     <div class="cta-soft">
       <p class="cta-soft-t">👇今すぐお得に申し込むなら👇</p>
-      <a class="banner js-referral-cta" href="https://r10.to/hkv2NB" target="_blank" rel="sponsored noopener">
+      <a class="banner js-referral-cta" href="https://r10.to/hkv2NB" target="_blank" rel="sponsored noopener"
+         data-cta-source="tool_result" data-cta-id="sumaho_simulator-result">
         <img src="https://cdn.jsdelivr.net/gh/momonav/blog-assets@main/banner_moushikomi.png" alt="楽天モバイル 社員紹介の申込ページ" />
       </a>
     </div>
 
     <div class="next">
-      <a href="https://momonav.com/entry/2026/06/13/194738" class="blog-link js-blog-link" target="_blank" rel="noopener">申し込み前に読んでほしいこと</a>
+      <a href="https://momonav.com/entry/2026/06/13/194738" class="blog-link js-guide-link" target="_blank" rel="noopener">申し込み前に読んでほしいこと</a>
     </div>
 
     <p class="note">※本診断はRakuten最強プラン(段階制・税抜 980/1,980/2,980円)＋最強家族割(1回線 月100円引き)で試算した目安です。実際の料金は使用量・条件で変わります。最新は<a href="https://network.mobile.rakuten.co.jp/" target="_blank" rel="noopener">公式サイト</a>でご確認ください。<br />※こども割・最強青春割・シニアプログラムはエントリーや条件が必要です。</p>
@@ -534,10 +539,12 @@
   // カバー画像をCOVER_IMGSから設定
   document.getElementById('img-plan-detail').src = COVER_IMGS.plan_detail;
 
-  document.querySelectorAll('.js-blog-link').forEach(function(el){
+  // 申込ガイド(194738)へのリンク。以前は blog_top というラベルで
+  // ブログトップへの遷移と混ざっていたので、専用ラベルに分けた。
+  document.querySelectorAll('.js-guide-link').forEach(function(el){
     el.addEventListener('click', function(){
       if(typeof gtag === 'function'){
-        gtag('event', 'tool_article_click', { article: 'blog_top' });
+        gtag('event', 'tool_article_click', { article: 'moushikomi_guide' });
       }
     });
   });
@@ -547,10 +554,32 @@
   document.querySelectorAll('.js-referral-cta').forEach(function(el){
     el.addEventListener('click', function(){
       if(typeof gtag === 'function'){
-        gtag('event', 'referral_cta_click', { cta_source: 'sumaho_simulator' });
+        gtag('event', 'referral_cta_click', {
+          cta_source: el.getAttribute('data-cta-source') || 'sumaho_simulator',
+          link_id: el.getAttribute('data-cta-id') || 'sumaho_simulator-result'
+        });
       }
     });
   });
+
+  // CTA露出計測（ブログ記事側と同じ手法。閾値0.5・1要素1回・発火後unobserve）
+  // 「そもそもCTAまで到達しているか」と「見たのに押さないか」を切り分けるため。
+  if ('IntersectionObserver' in window) {
+    var ctaObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.intersectionRatio < 0.5) return;
+        var el = en.target;
+        ctaObserver.unobserve(el);
+        if (typeof gtag === 'function') {
+          gtag('event', 'referral_cta_view', {
+            cta_source: el.getAttribute('data-cta-source') || 'tool_result',
+            link_id: el.getAttribute('data-cta-id') || 'sumaho_simulator-result'
+          });
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.js-referral-cta').forEach(function(el){ ctaObserver.observe(el); });
+  }
 
   document.querySelectorAll('.artcard').forEach(function(el){
     el.addEventListener('click', function(){
