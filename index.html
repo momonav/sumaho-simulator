@@ -18,10 +18,18 @@
 <meta name="twitter:image" content="https://tools.momonav.com/CAL.png" />
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QBSVJND6VH"></script>
 <script>
+  // 本番ホスト以外(ローカル検証・file://・localhost)では計測を送らない。
+  // 2026-08-03にGA4へ hostName=127.0.0.1 のセッションが混入していたため。
+  // gtag自体は定義しておく（各所の typeof gtag === 'function' 判定を壊さないため）。
+  var MEASURE = location.hostname === 'tools.momonav.com';
   window.dataLayer = window.dataLayer || [];
-  function gtag(){ dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'G-QBSVJND6VH');
+  if (MEASURE) {
+    window.gtag = function(){ dataLayer.push(arguments); };
+    gtag('js', new Date());
+    gtag('config', 'G-QBSVJND6VH');
+  } else {
+    window.gtag = function(){ /* ローカル検証中は送信しない */ };
+  }
 </script>
 <style>
   :root{ --mag:#FF008C; --magl:#FF59B4; --ink:#3a3a3a; --bg:#ffffff; --card:#fff; --line:#f6d5d1; }
